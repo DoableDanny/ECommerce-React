@@ -62,6 +62,7 @@ const App = () => {
       refreshCart();
     } catch (error) {
       setErrorMessage(error.data.error.message);
+      console.log(error);
     }
   };
 

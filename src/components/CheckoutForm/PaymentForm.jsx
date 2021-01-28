@@ -17,6 +17,7 @@ const PaymentForm = ({
   backStep,
   onCaptureCheckout,
   nextStep,
+  timeOut,
 }) => {
   const handleSubmit = async (event, elements, stripe) => {
     // Prevents website from refreshing
@@ -34,6 +35,7 @@ const PaymentForm = ({
     if (error) {
       console.log(error);
     } else {
+      console.log(checkoutToken.live.line_items);
       const orderData = {
         line_items: checkoutToken.live.line_items,
         customer: {
@@ -59,6 +61,9 @@ const PaymentForm = ({
       };
 
       onCaptureCheckout(checkoutToken.id, orderData);
+
+      // Load for a max of 5 seconds
+      timeOut();
 
       nextStep();
     }

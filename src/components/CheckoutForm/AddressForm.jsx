@@ -45,8 +45,6 @@ const AddressForm = ({ checkoutToken, next }) => {
       checkoutTokenId
     );
 
-    console.log(countries);
-
     setShippingCountries(countries);
     setShippingCountry(Object.keys(countries)[0]);
   };

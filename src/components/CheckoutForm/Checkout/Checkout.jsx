@@ -10,7 +10,7 @@ import {
   Button,
   CssBaseline,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { commerce } from '../../../lib/Commerce';
 import useStyles from './styles';
@@ -23,7 +23,9 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [checkoutToken, setCheckoutToken] = useState(null);
   const [shippingData, setShippingData] = useState({});
+  const [isFinished, setIsFinished] = useState(false);
   const classes = useStyles();
+  const history = useHistory();
 
   // Create new checkout token when user goes to checkout or if cart changes
   useEffect(() => {
@@ -36,7 +38,7 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
 
         setCheckoutToken(token);
       } catch (error) {
-        console.log(error);
+        history.push('/');
       }
     };
 
@@ -52,6 +54,13 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
     nextStep();
   };
 
+  // If loads for any longer than 5 seconds - scrap it
+  const timeOut = () => {
+    setTimeout(() => {
+      setIsFinished(true);
+    }, 5000);
+  };
+
   let Confirmation = () =>
     order.customer ? (
       <>
@@ -64,6 +73,17 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
           <Typography variant='subtitle2'>
             Order ref: {order.customer_reference}
           </Typography>
+        </div>
+        <br />
+        <Button component={Link} to='/' variant='outlined' type='button'>
+          Back to Home
+        </Button>
+      </>
+    ) : isFinished ? (
+      <>
+        <div>
+          <Typography variant='h5'>Thank you for your purchase</Typography>
+          <Divider />
         </div>
         <br />
         <Button component={Link} to='/' variant='outlined' type='button'>
@@ -96,6 +116,7 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
         nextStep={nextStep}
         backStep={backStep}
         onCaptureCheckout={onCaptureCheckout}
+        timeOut={timeOut}
       />
     );
 
